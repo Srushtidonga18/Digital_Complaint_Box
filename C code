@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Complaint {
+    int id;
+    char name[50];
+    char category[30];
+    char description[200];
+};
+
+void addComplaint() {
+    struct Complaint c;
+    FILE *fp;
+
+    fp = fopen("complaints.txt", "a");
+    if (fp == NULL) {
+        printf("File cannot be opened!\n");
+        return;
+    }
+
+    printf("\nEnter Complaint ID: ");
+    scanf("%d", &c.id);
+
+    getchar(); // clear buffer
+
+    printf("Enter Your Name: ");
+    gets(c.name);
+
+    printf("Enter Category (Hostel/Canteen/Faculty/etc): ");
+    gets(c.category);
+
+    printf("Enter Complaint Description: ");
+    gets(c.description);
+
+    fwrite(&c, sizeof(c), 1, fp);
+    fclose(fp);
+
+    printf("\nComplaint Submitted Successfully!\n");
+}
+
+void viewComplaints() {
+    struct Complaint c;
+    FILE *fp;
+
+    fp = fopen("complaints.txt", "r");
+    if (fp == NULL) {
+        printf("\nNo complaints found!\n");
+        return;
+    }
+
+    printf("\n--- All Complaints ---\n");
+
+    while (fread(&c, sizeof(c), 1, fp)) {
+        printf("\nComplaint ID: %d", c.id);
+        printf("\nName: %s", c.name);
+        printf("\nCategory: %s", c.category);
+        printf("\nDescription: %s\n", c.description);
+        printf("-----------------------------\n");
+    }
+
+    fclose(fp);
+}
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n==== Digital Complaint Box ====\n");
+        printf("1. Add Complaint\n");
+        printf("2. View Complaints\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addComplaint();
+                break;
+            case 2:
+                viewComplaints();
+                break;
+            case 3:
+                printf("Thank you for using Digital Complaint Box!\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+
+    return 0;
+}
